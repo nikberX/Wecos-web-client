@@ -1,16 +1,11 @@
 # wecos_forum
 
-A new Flutter project.
+Diploma for bachelor degree of TSU.
 
-## Getting Started
+## About
 
-This project is a starting point for a Flutter application.
+Web-client (Forum) for Wecos project.
 
-A few resources to get you started if this is your first Flutter project:
+Users of Wecos can communicate, exchange data and even earh achievment badges here.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Written with flutter web
