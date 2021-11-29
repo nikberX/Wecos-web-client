@@ -8,14 +8,27 @@ class UserModel extends User {
     required String email,
     required String imageUrl,
     required DateTime createdAt,
-    required Language language,
   }) : super(
-    id: id, 
-    name: name, 
-    email: email, 
-    imageUrl: imageUrl, 
-    createdAt: createdAt, 
-    language: language,
-    );
+          id: id,
+          name: name,
+          email: email,
+          imageUrl: imageUrl,
+          createdAt: createdAt,
+        );
 
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+        id: json['id'],
+        name: json['username'],
+        email: json['email'],
+        imageUrl: json['imageName'],
+        createdAt: DateTime.parse(json['createdAt']),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "username": name,
+        "email": email,
+        "imageName": imageUrl,
+        "createdAt": createdAt.toIso8601String(),
+      };
 }
