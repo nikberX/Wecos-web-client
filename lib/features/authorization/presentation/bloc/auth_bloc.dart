@@ -21,12 +21,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Stream<AuthState> _loginHandler(AuthLoginEvent event) async* {
     yield AuthLoadingState();
-    try {} on DioError catch (e) {
+    try {
+      userRepository.login(event.email, event.password);
+    } on DioError catch (e) {
       yield AuthErrorState(e.message);
+    } catch (e) {
+      yield AuthErrorState(e.toString());
     }
   }
 
-  Stream<AuthState> _registerHandler(AuthRegisterEvent event) async* {}
+  Stream<AuthState> _registerHandler(AuthRegisterEvent event) async* {
+    yield AuthLoadingState();
+    try {
+      userRepository.register(
+          event.email, event.email.split('@').first, event.password);
+    } on DioError catch (e) {
+      yield AuthErrorState(e.message);
+    } catch (e) {
+      yield AuthErrorState(e.toString());
+    }
+  }
 
   @override
   Future<void> close() async {

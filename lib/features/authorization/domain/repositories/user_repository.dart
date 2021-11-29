@@ -12,6 +12,11 @@ class UserRepository {
   String? get refresh => auth?.refresh;
   String? get access => auth?.access;
 
+  Future<void> register(String email, String username, String password) async {
+    auth = await api.register(email, username, password, null);
+    await getUserProfile();
+  }
+
   Future<void> login(String email, String password) async {
     auth = await api.login(email, password);
     await getUserProfile();

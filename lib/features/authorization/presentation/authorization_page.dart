@@ -144,8 +144,14 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
                                     onPressed: () {
                                       BlocProvider.of<AuthBloc>(context).add(
                                         sign_in
-                                            ? AuthLoginEvent()
-                                            : AuthRegisterEvent(),
+                                            ? AuthLoginEvent(
+                                                _emailController.text,
+                                                _passwordController.text,
+                                              )
+                                            : AuthRegisterEvent(
+                                                _emailController.text,
+                                                _passwordController.text,
+                                              ),
                                       );
                                     },
                                     child: Text(
