@@ -6,6 +6,7 @@ import 'package:wecos_forum/core/service/api/api.dart';
 import 'package:wecos_forum/core/service/http_client.dart/http_client.dart';
 import 'package:wecos_forum/core/service/log_service/log_strategies/console_log_strategy.dart';
 import 'package:wecos_forum/core/service/log_service/logger.dart';
+import 'package:wecos_forum/core/utils/app_colors.dart';
 import 'package:wecos_forum/features/authorization/domain/repositories/user_repository.dart';
 import 'package:wecos_forum/features/dashboard/presentation/dashboard_page.dart';
 import 'features/authorization/presentation/authorization_page.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (ctx) => BlocProvider(
               create: (context) => AuthBloc(GetIt.I.get<UserRepository>()),
-              child: DashboardPage(),
+              child: HomePage(),
             ),
         '/authorization': (ctx) => BlocProvider(
               create: (context) => AuthBloc(GetIt.I.get<UserRepository>()),
@@ -52,6 +53,57 @@ class MyApp extends StatelessWidget {
             ),
         //'/posts' : (ctx) => DashboardPage(),
       },
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int index = 0;
+
+  List<Widget> pages = [DashboardPage(), AuthorizationPage()];
+
+  void _onItemTapped(int newIndex) {
+    setState(() {
+      index = newIndex;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: pages[index],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedIconTheme: IconThemeData(color: AppColor.cardBackground),
+        unselectedIconTheme: IconThemeData(color: AppColor.blue3),
+        onTap: (index) async {
+          _onItemTapped(index);
+        },
+        currentIndex: index,
+        selectedItemColor: AppColor.blue1,
+        unselectedItemColor: AppColor.blue3,
+        unselectedFontSize: 0,
+        showUnselectedLabels: true,
+        backgroundColor: AppColor.sand,
+        elevation: 0,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_rounded),
+            label: tr('posts'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: tr('profile'),
+          ),
+        ],
+      ),
     );
   }
 }
