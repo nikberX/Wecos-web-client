@@ -6,9 +6,7 @@ class User extends Equatable {
   final String name;
   final String email;
   final String imageUrl;
-  // final List<Badge> badges;
   final DateTime createdAt;
-  final Language language;
 
   User({
     required this.id,
@@ -16,9 +14,8 @@ class User extends Equatable {
     required this.email,
     required this.imageUrl,
     required this.createdAt,
-    required this.language
   });
 
   @override
-  List<Object?> get props => [id, name, email, imageUrl, createdAt, language];
+  List<Object?> get props => [id, name, email, imageUrl, createdAt];
 }
