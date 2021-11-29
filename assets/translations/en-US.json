@@ -1,5 +1,7 @@
 {
     "sign_in" : "Sign in",
     "sign_up" : "Sign up",
-    "welcome_to_wecos" : "Welcome to Wecos!"
+    "welcome_to_wecos" : "Welcome to Wecos!",
+    "or" : "or",
+    "i_have_account" : "I have an account"
 }

@@ -1,5 +1,7 @@
 {
     "sign_in" : "Войти",
     "sign_up" : "Зарегистрироваться",
-    "welcome_to_wecos" : "Добро пожаловать в Wecos!"
+    "welcome_to_wecos" : "Добро пожаловать в Wecos!",
+    "or" : "или",
+    "i_have_account" : "Уже есть аккаунт"
 }
