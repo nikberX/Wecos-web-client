@@ -7,6 +7,7 @@ import 'package:wecos_forum/core/service/http_client.dart/http_client.dart';
 import 'package:wecos_forum/core/service/log_service/log_strategies/console_log_strategy.dart';
 import 'package:wecos_forum/core/service/log_service/logger.dart';
 import 'package:wecos_forum/features/authorization/domain/repositories/user_repository.dart';
+import 'package:wecos_forum/features/dashboard/presentation/dashboard_page.dart';
 import 'features/authorization/presentation/authorization_page.dart';
 import 'features/authorization/presentation/bloc/auth_bloc.dart';
 
@@ -39,11 +40,11 @@ class MyApp extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       localizationsDelegates: context.localizationDelegates,
       theme: ThemeData(),
-      initialRoute: '/authorization',
+      initialRoute: '/',
       routes: {
         '/': (ctx) => BlocProvider(
               create: (context) => AuthBloc(GetIt.I.get<UserRepository>()),
-              child: AuthorizationPage(),
+              child: DashboardPage(),
             ),
         '/authorization': (ctx) => BlocProvider(
               create: (context) => AuthBloc(GetIt.I.get<UserRepository>()),
