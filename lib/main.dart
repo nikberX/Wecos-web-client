@@ -9,6 +9,8 @@ import 'package:wecos_forum/core/service/log_service/log_strategies/console_log_
 import 'package:wecos_forum/core/service/log_service/logger.dart';
 import 'package:wecos_forum/core/utils/app_colors.dart';
 import 'package:wecos_forum/features/authorization/domain/repositories/user_repository.dart';
+import 'package:wecos_forum/features/dashboard/domain/repositories/posts_repository.dart';
+import 'package:wecos_forum/features/dashboard/presentation/bloc/posts_bloc.dart';
 import 'package:wecos_forum/features/dashboard/presentation/dashboard_page.dart';
 import 'features/authorization/presentation/authorization_page.dart';
 import 'features/authorization/presentation/bloc/auth_bloc.dart';
@@ -19,6 +21,8 @@ void main() async {
   GetIt.I.get<HttpClient>().addInterceptor(DioLogger(GetIt.I.get<Logger>()));
   GetIt.I.registerSingleton<Api>(Api(GetIt.I.get<HttpClient>()));
   GetIt.I.registerSingleton<UserRepository>(UserRepository(GetIt.I.get<Api>()));
+  GetIt.I
+      .registerSingleton<PostsRepository>(PostsRepository(GetIt.I.get<Api>()));
   await EasyLocalization.ensureInitialized();
   runApp(
     EasyLocalization(
@@ -46,7 +50,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (ctx) => BlocProvider(
-              create: (context) => AuthBloc(GetIt.I.get<UserRepository>()),
+              create: (context) => PostsBloc(GetIt.I.get<PostsRepository>()),
               child: HomePage(),
             ),
         '/authorization': (ctx) => BlocProvider(

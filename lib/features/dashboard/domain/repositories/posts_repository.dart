@@ -22,7 +22,10 @@ class PostsRepository {
       }
       posts.addAll(postsPaginative.data);
     } on DioError catch (e) {
-    } catch (e) {}
+      throw e;
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<void> refresh() async {
