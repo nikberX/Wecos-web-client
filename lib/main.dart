@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:wecos_forum/core/service/api/api.dart';
+import 'package:wecos_forum/core/service/http_client.dart/dio_interceptors.dart/dio_logger.dart';
 import 'package:wecos_forum/core/service/http_client.dart/http_client.dart';
 import 'package:wecos_forum/core/service/log_service/log_strategies/console_log_strategy.dart';
 import 'package:wecos_forum/core/service/log_service/logger.dart';
@@ -15,6 +16,7 @@ import 'features/authorization/presentation/bloc/auth_bloc.dart';
 void main() async {
   GetIt.I.registerSingleton<Logger>(Logger(logStrategy: ConsoleLogStrategy()));
   GetIt.I.registerSingleton<HttpClient>(HttpClient());
+  GetIt.I.get<HttpClient>().addInterceptor(DioLogger(GetIt.I.get<Logger>()));
   GetIt.I.registerSingleton<Api>(Api(GetIt.I.get<HttpClient>()));
   GetIt.I.registerSingleton<UserRepository>(UserRepository(GetIt.I.get<Api>()));
   await EasyLocalization.ensureInitialized();
@@ -95,7 +97,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_rounded),
+            icon: Icon(Icons.architecture),
             label: tr('posts'),
           ),
           BottomNavigationBarItem(
