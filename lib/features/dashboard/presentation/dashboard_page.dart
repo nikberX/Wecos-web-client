@@ -1,8 +1,18 @@
-import 'package:easy_localization/easy_localization.dart';
+//import 'package:easy_localization/easy_localization.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:wecos_forum/core/constants/app_constants.dart';
+import 'package:wecos_forum/core/service/log_service/logger.dart';
 import 'package:wecos_forum/core/utils/app_colors.dart';
+import 'package:wecos_forum/features/dashboard/presentation/bloc/posts_bloc.dart';
+import 'package:wecos_forum/features/dashboard/presentation/widgets/post_card.dart';
+import 'package:http/http.dart' as http;
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -42,7 +52,7 @@ class _DashboardPageState extends State<DashboardPage> {
           borderRadius: BorderRadius.circular(15),
         ),
         child: MaterialButton(
-          onPressed: () {},
+          onPressed: () async {},
           child: Row(
             children: [
               Icon(Icons.add),
@@ -62,100 +72,45 @@ class _DashboardPageState extends State<DashboardPage> {
           Positioned.fill(
             child: Center(
               child: Container(
-                  child: CustomScrollView(
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (ctx, index) => Container(
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 350,
-                        ),
-                        height: 380,
-                        width: 450,
-                        decoration: BoxDecoration(
-                          color: AppColor.cardBackground,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Stack(
-                            children: [
-                              Image.network(
-                                  'https://cdn.britannica.com/58/94858-050-59D40EAE/compound-life-Earth-water-molecules-structure-properties.jpg'),
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Container(
-                                  alignment: Alignment.bottomCenter,
-                                  color: Colors.black45,
-                                  height: 150,
-                                  padding: const EdgeInsets.all(10),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              'Title',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            'Content',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          Text(
-                                            'Author : username',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          IconButton(
-                                            onPressed: () {},
-                                            icon: Icon(
-                                              Icons.comment,
-                                            ),
-                                          ),
-                                          Text(
-                                            '12',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12,
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      childCount: 15,
-                    ),
-                  ),
-                ],
-              )),
+                child: BlocBuilder<PostsBloc, PostsState>(
+                  builder: (context, state) {
+                    GetIt.I.get<Logger>().info('Bloc', state.runtimeType);
+                    if (state is PostsSuccessState) {
+                      GetIt.I.get<Logger>().info('Success post', 'build');
+                      return CustomScrollView(
+                        slivers: [
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (ctx, index) =>
+                                  PostCard(post: state.posts[index]),
+                              childCount: state.posts.length,
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                    if (state is PostsLoadingMoreState) {
+                      return CustomScrollView(
+                        slivers: [
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (ctx, index) =>
+                                  PostCard(post: state.posts[index]),
+                              childCount: state.posts.length,
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                    if (state is PostsLoadingState) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              ),
             ),
           ),
         ],

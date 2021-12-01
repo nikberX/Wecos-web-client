@@ -7,7 +7,9 @@ part 'posts_event.dart';
 part 'posts_state.dart';
 
 class PostsBloc extends Bloc<PostsEvent, PostsState> {
-  PostsBloc(this.postsRepository) : super(PostsInitialState());
+  PostsBloc(this.postsRepository) : super(PostsInitialState()) {
+    add(PostsLoadEvent());
+  }
 
   final PostsRepository postsRepository;
 
@@ -35,7 +37,11 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
   Stream<PostsState> _handleLoadMoreEvent(PostsLoadMoreEvent event) async* {
     try {
       if (!postsRepository.canLoadMore) return;
+
+      yield PostsLoadingMoreState(postsRepository.posts);
+
       await postsRepository.getPosts();
+
       yield PostsSuccessState(postsRepository.posts);
     } catch (e) {
       yield PostsErrorState('Something went wrong...');

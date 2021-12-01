@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
+//import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:wecos_forum/core/service/api/api.dart';
@@ -12,6 +12,7 @@ import 'package:wecos_forum/features/authorization/domain/repositories/user_repo
 import 'package:wecos_forum/features/dashboard/domain/repositories/posts_repository.dart';
 import 'package:wecos_forum/features/dashboard/presentation/bloc/posts_bloc.dart';
 import 'package:wecos_forum/features/dashboard/presentation/dashboard_page.dart';
+import 'core/constants/app_constants.dart';
 import 'features/authorization/presentation/authorization_page.dart';
 import 'features/authorization/presentation/bloc/auth_bloc.dart';
 
@@ -23,15 +24,10 @@ void main() async {
   GetIt.I.registerSingleton<UserRepository>(UserRepository(GetIt.I.get<Api>()));
   GetIt.I
       .registerSingleton<PostsRepository>(PostsRepository(GetIt.I.get<Api>()));
-  await EasyLocalization.ensureInitialized();
-  runApp(
-    EasyLocalization(
-      supportedLocales: [Locale('en', 'US'), Locale('ru', 'RU')],
-      path: 'assets/translations',
-      fallbackLocale: Locale('en', 'US'),
-      child: MyApp(),
-    ),
-  );
+
+  //await EasyLocalization.ensureInitialized();
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -43,9 +39,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       debugShowMaterialGrid: false,
       showSemanticsDebugger: false,
-      locale: context.locale,
-      supportedLocales: context.supportedLocales,
-      localizationsDelegates: context.localizationDelegates,
+      //locale: context.locale,
+      //supportedLocales: context.supportedLocales,
+      //localizationsDelegates: context.localizationDelegates,
       theme: ThemeData(),
       initialRoute: '/',
       routes: {
@@ -73,7 +69,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int index = 0;
 
-  List<Widget> pages = [DashboardPage(), AuthorizationPage()];
+  List<Widget> pages = [
+    BlocProvider(
+      create: (context) => PostsBloc(GetIt.I.get<PostsRepository>()),
+      child: DashboardPage(),
+    ),
+    BlocProvider(
+      create: (context) => AuthBloc(GetIt.I.get<UserRepository>()),
+      child: AuthorizationPage(),
+    ),
+  ];
 
   void _onItemTapped(int newIndex) {
     setState(() {

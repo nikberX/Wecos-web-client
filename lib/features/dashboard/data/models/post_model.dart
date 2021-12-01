@@ -23,7 +23,7 @@ class PostModel extends Post {
         id: json['id'],
         title: json['title'],
         content: json['content'],
-        imageUrl: json['imageUrl'],
+        imageUrl: json['imageName'],
         createdAt: DateTime.parse(json['createdAt']),
         authorId: json['UserId'],
         authorName: json['username'] ?? 'unknown',

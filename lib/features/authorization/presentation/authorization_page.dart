@@ -1,7 +1,8 @@
-import 'package:easy_localization/easy_localization.dart';
+//import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wecos_forum/core/constants/app_constants.dart';
 import 'package:wecos_forum/core/utils/app_colors.dart';
 import 'package:wecos_forum/features/authorization/presentation/bloc/auth_bloc.dart';
 
