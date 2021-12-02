@@ -9,7 +9,10 @@ class CreatePostInitialState extends CreatePostState {}
 
 class CreatePostLoadingState extends CreatePostState {}
 
-class CreatePostSuccessState extends CreatePostState {}
+class CreatePostSuccessState extends CreatePostState {
+  final String postId;
+  CreatePostSuccessState(this.postId);
+}
 
 class CreatePostErrorState extends CreatePostState {
   final String error;

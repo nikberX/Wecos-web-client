@@ -20,7 +20,8 @@ class UserModel extends User {
         id: json['id'],
         name: json['username'],
         email: json['email'],
-        imageUrl: json['imageName'],
+        imageUrl: json['imageName'] ??
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRpLVM6APU_AeF4ZGZEwK8TfD0uz2bHqQntw&usqp=CAU',
         createdAt: DateTime.parse(json['createdAt']),
       );
 

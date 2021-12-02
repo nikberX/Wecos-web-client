@@ -29,7 +29,6 @@ class PostCard extends StatelessWidget {
               child: Container(
                 alignment: Alignment.bottomCenter,
                 color: Colors.black45,
-                height: 150,
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

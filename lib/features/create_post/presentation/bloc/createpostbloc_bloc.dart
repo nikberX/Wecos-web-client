@@ -15,6 +15,9 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
   Stream<CreatePostState> mapEventToState(CreatePostEvent event) async* {
     if (event is CreatePostEvent) {
       yield CreatePostLoadingState();
+      final postId =
+          await api.createPost(event.imageUrl, event.title, event.content);
+      yield CreatePostSuccessState(postId);
       try {} on DioError catch (e) {
       } catch (e) {}
     }

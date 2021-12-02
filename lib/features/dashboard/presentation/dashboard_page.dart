@@ -52,11 +52,13 @@ class _DashboardPageState extends State<DashboardPage> {
           borderRadius: BorderRadius.circular(15),
         ),
         child: MaterialButton(
-          onPressed: () async {},
+          onPressed: () {
+            Navigator.of(context).pushNamed('/posts/create-post');
+          },
           child: Row(
             children: [
               Icon(Icons.add),
-              Text('Create post'),
+              Text('Создать пост'),
             ],
           ),
           color: AppColor.greenSand,

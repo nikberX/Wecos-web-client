@@ -1,9 +1,12 @@
+import 'package:get_it/get_it.dart';
 import 'package:wecos_forum/core/service/http_client.dart/http_client.dart';
+import 'package:wecos_forum/core/service/log_service/logger.dart';
 import 'package:wecos_forum/core/utils/paginative.dart';
 import 'package:wecos_forum/features/authorization/data/models/token_pair_model.dart';
 import 'package:wecos_forum/features/authorization/data/models/user_model.dart';
 import 'package:wecos_forum/features/authorization/domain/entities/token_pair.dart';
 import 'package:wecos_forum/features/dashboard/data/models/post_model.dart';
+import 'package:wecos_forum/features/view_post/data/models/post_with_comments_model.dart';
 
 class Api {
   HttpClient httpClient;
@@ -59,5 +62,21 @@ class Api {
           .map((json) => PostModel.fromJson(json))
           .toList(),
     );
+  }
+
+  Future<PostWithCommentsModel> getPost(String postId) async {
+    final result = await httpClient.get('/posts/$postId');
+    return PostWithCommentsModel.fromJson(result!.data['result']);
+  }
+
+  Future<String> createPost(
+      String imageUrl, String title, String content) async {
+    final result = await httpClient.post('/posts/create-post', {
+      'imageName': imageUrl,
+      'title': title,
+      'content': content,
+    });
+
+    return result!.data['postId'];
   }
 }
