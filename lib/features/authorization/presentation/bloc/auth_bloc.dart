@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:wecos_forum/core/service/log_service/logger.dart';
 import 'package:wecos_forum/features/authorization/domain/repositories/user_repository.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -23,6 +25,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     yield AuthLoadingState();
     try {
       userRepository.login(event.email, event.password);
+      yield AuthSuccessState();
     } on DioError catch (e) {
       yield AuthErrorState(e.message);
     } catch (e) {
@@ -35,11 +38,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       userRepository.register(
           event.email, event.email.split('@').first, event.password);
+      yield AuthSuccessState();
     } on DioError catch (e) {
       yield AuthErrorState(e.message);
     } catch (e) {
       yield AuthErrorState(e.toString());
     }
+  }
+
+  @override
+  void onChange(Change<AuthState> change) {
+    GetIt.I
+        .get<Logger>()
+        .debug(change.currentState.runtimeType.toString(), change.nextState);
+    super.onChange(change);
   }
 
   @override
