@@ -79,4 +79,12 @@ class Api {
 
     return result!.data['postId'];
   }
+
+  Future<void> createComment(
+      String postId, String imageUrl, String content) async {
+    final result = await httpClient.post('/posts/$postId/create-comment', {
+      'imageName': imageUrl,
+      'content': content,
+    });
+  }
 }

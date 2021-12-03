@@ -9,6 +9,7 @@ import 'package:wecos_forum/core/service/log_service/logger.dart';
 import 'package:wecos_forum/core/utils/app_colors.dart';
 import 'package:wecos_forum/features/authorization/presentation/bloc/auth_bloc.dart';
 import 'package:wecos_forum/features/create_post/presentation/bloc/createpostbloc_bloc.dart';
+import 'package:wecos_forum/features/view_post/presentation/bloc/createcomment_bloc.dart';
 import 'package:wecos_forum/features/view_post/presentation/bloc/viewpost_bloc.dart';
 
 class PostPage extends StatefulWidget {
@@ -27,10 +28,13 @@ class _PostPageState extends State<PostPage> {
   TextEditingController _contentController = TextEditingController();
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    BlocProvider.of<ViewPostBloc>(context)
+        .add(ViewPostLoadEvent(widget.postId));
   }
 
   @override
@@ -39,12 +43,11 @@ class _PostPageState extends State<PostPage> {
     _imageUrlController.dispose();
     _titleController.dispose();
     _contentController.dispose();
+    _scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ViewPostBloc>(context)
-        .add(ViewPostLoadEvent(widget.postId));
     return Scaffold(
       backgroundColor: Colors.lightBlue,
       body: Stack(
@@ -56,6 +59,7 @@ class _PostPageState extends State<PostPage> {
           ),
           Center(
             child: SingleChildScrollView(
+              controller: _scrollController,
               child: Container(
                 padding: const EdgeInsets.all(15),
                 child: BlocBuilder<ViewPostBloc, ViewPostState>(
@@ -122,6 +126,95 @@ class _PostPageState extends State<PostPage> {
                                 ],
                               ),
                             ),
+                          ),
+                          Form(
+                            key: formKey,
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 10),
+                                const Divider(),
+                                const SizedBox(height: 10),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 300),
+                                  child: TextFormField(
+                                    controller: _imageUrlController,
+                                    decoration: inputDecoration('Комментарий'),
+                                    validator: (value) => validator(value),
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 300),
+                                  child: TextFormField(
+                                    onEditingComplete: () {
+                                      setState(() {});
+                                    },
+                                    onChanged: (_) {
+                                      setState(() {});
+                                    },
+                                    controller: _titleController,
+                                    decoration:
+                                        inputDecoration('Картинка (Url)'),
+                                    validator: (value) => validator(value),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                const Divider(),
+                                const SizedBox(height: 10),
+                              ],
+                            ),
+                          ),
+                          BlocBuilder<CreateCommentBloc, CreateCommentState>(
+                            builder: (context, state) {
+                              if (state is CreateCommentLoadingState)
+                                return Container(
+                                  height: 53,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.withOpacity(0.8),
+                                    border: Border.all(color: Colors.green),
+                                    borderRadius: BorderRadius.circular(13),
+                                  ),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              if (state is CreateCommentSuccessState) {
+                                BlocProvider.of<ViewPostBloc>(context)
+                                    .add(ViewPostLoadEvent(widget.postId));
+                                //TODO: REFACTOR HOT FIX
+                                BlocProvider.of<CreateCommentBloc>(context)
+                                    .add(CreateCommentCrearEvent.empty());
+                              }
+                              return Container(
+                                height: 53,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.8),
+                                  border: Border.all(color: Colors.green),
+                                  borderRadius: BorderRadius.circular(13),
+                                ),
+                                child: MaterialButton(
+                                  onPressed: () {
+                                    var res = formKey.currentState!.validate();
+                                    if (res) {
+                                      BlocProvider.of<CreateCommentBloc>(
+                                              context)
+                                          .add(
+                                        CreateCommentEvent(
+                                          _imageUrlController.text,
+                                          _titleController.text,
+                                          widget.postId,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: Text('Оставить комментарий'),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       );
