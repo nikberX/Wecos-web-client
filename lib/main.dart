@@ -25,6 +25,7 @@ import 'core/constants/app_constants.dart';
 import 'features/authorization/presentation/authorization_page.dart';
 import 'features/authorization/presentation/bloc/auth_bloc.dart';
 import 'features/create_post/presentation/create_post_page.dart';
+import 'features/view_post/presentation/bloc/createcomment_bloc.dart';
 
 void main() async {
   GetIt.I.registerSingleton<Logger>(Logger(logStrategy: ConsoleLogStrategy()));
@@ -40,6 +41,8 @@ void main() async {
       ViewPostRepository(GetIt.I.get<Api>()));
   GetIt.I.registerSingleton<ProfileRepository>(
       ProfileRepository(GetIt.I.get<Api>(), GetIt.I.get<UserRepository>()));
+
+  await GetIt.I.get<UserRepository>().checkAuth();
 
   //await EasyLocalization.ensureInitialized();
 
@@ -59,7 +62,8 @@ class MyApp extends StatelessWidget {
       //supportedLocales: context.supportedLocales,
       //localizationsDelegates: context.localizationDelegates,
       theme: ThemeData(),
-      initialRoute: '/authorization',
+      initialRoute:
+          GetIt.I.get<UserRepository>().authenticated ? '/' : '/authorization',
       routes: {
         '/': (ctx) => BlocProvider(
               create: (context) => PostsBloc(GetIt.I.get<PostsRepository>()),
@@ -78,9 +82,16 @@ class MyApp extends StatelessWidget {
               create: (context) => CreatePostBloc(GetIt.I.get<Api>()),
               child: CreatePostPage(),
             ),
-        '/post': (ctx) => BlocProvider(
-              create: (context) =>
-                  ViewPostBloc(GetIt.I.get<ViewPostRepository>()),
+        '/post': (ctx) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) =>
+                      ViewPostBloc(GetIt.I.get<ViewPostRepository>()),
+                ),
+                BlocProvider(
+                  create: (context) => CreateCommentBloc(GetIt.I.get<Api>()),
+                ),
+              ],
               child: PostPage(postId: 'f0e9eb55-6b2a-4b3c-ab52-88e52b698566'),
             ),
         //'/posts' : (ctx) => DashboardPage(),

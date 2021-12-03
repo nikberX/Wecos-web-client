@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:wecos_forum/core/service/api/api.dart';
 import 'package:wecos_forum/core/utils/app_colors.dart';
 import 'package:wecos_forum/features/dashboard/domain/entity/post.dart';
 import 'package:wecos_forum/features/view_post/domain/repositories/viewpost_repository.dart';
+import 'package:wecos_forum/features/view_post/presentation/bloc/createcomment_bloc.dart';
 import 'package:wecos_forum/features/view_post/presentation/bloc/viewpost_bloc.dart';
 import 'package:wecos_forum/features/view_post/presentation/post_page.dart';
 
@@ -17,9 +19,16 @@ class PostCard extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (ctx) => BlocProvider(
-              create: (context) =>
-                  ViewPostBloc(GetIt.I.get<ViewPostRepository>()),
+            builder: (ctx) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) =>
+                      ViewPostBloc(GetIt.I.get<ViewPostRepository>()),
+                ),
+                BlocProvider(
+                  create: (context) => CreateCommentBloc(GetIt.I.get<Api>()),
+                ),
+              ],
               child: PostPage(postId: post.id),
             ),
             settings: RouteSettings(name: '/post/${post.id}'),
@@ -89,9 +98,22 @@ class PostCard extends StatelessWidget {
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                    builder: (ctx) => PostPage(postId: post.id),
-                                    settings: RouteSettings(
-                                        name: '/post/${post.id}')),
+                                  builder: (ctx) => MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider(
+                                        create: (context) => ViewPostBloc(
+                                            GetIt.I.get<ViewPostRepository>()),
+                                      ),
+                                      BlocProvider(
+                                        create: (context) => CreateCommentBloc(
+                                            GetIt.I.get<Api>()),
+                                      ),
+                                    ],
+                                    child: PostPage(postId: post.id),
+                                  ),
+                                  settings:
+                                      RouteSettings(name: '/post/${post.id}'),
+                                ),
                               );
                             },
                             icon: Icon(

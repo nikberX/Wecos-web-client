@@ -5,11 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:wecos_forum/core/constants/app_constants.dart';
+import 'package:wecos_forum/core/service/api/api.dart';
 import 'package:wecos_forum/core/service/log_service/logger.dart';
 import 'package:wecos_forum/core/utils/app_colors.dart';
 import 'package:wecos_forum/features/authorization/presentation/bloc/auth_bloc.dart';
 import 'package:wecos_forum/features/create_post/presentation/bloc/createpostbloc_bloc.dart';
 import 'package:wecos_forum/features/view_post/domain/repositories/viewpost_repository.dart';
+import 'package:wecos_forum/features/view_post/presentation/bloc/createcomment_bloc.dart';
 import 'package:wecos_forum/features/view_post/presentation/bloc/viewpost_bloc.dart';
 import 'package:wecos_forum/features/view_post/presentation/post_page.dart';
 
@@ -62,10 +64,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
             Navigator.of(context).pop();
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (ctx) => BlocProvider(
-                  create: (context) =>
-                      ViewPostBloc(GetIt.I.get<ViewPostRepository>()),
-                  child: PostPage(postId: state.postId),
+                builder: (ctx) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (context) =>
+                          ViewPostBloc(GetIt.I.get<ViewPostRepository>()),
+                    ),
+                    BlocProvider(
+                      create: (context) =>
+                          CreateCommentBloc(GetIt.I.get<Api>()),
+                    ),
+                  ],
+                  child:
+                      PostPage(postId: 'f0e9eb55-6b2a-4b3c-ab52-88e52b698566'),
                 ),
               ),
             );
