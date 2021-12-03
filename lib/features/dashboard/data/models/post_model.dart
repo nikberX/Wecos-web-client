@@ -26,6 +26,6 @@ class PostModel extends Post {
         imageUrl: json['imageName'],
         createdAt: DateTime.parse(json['createdAt']),
         authorId: json['UserId'],
-        authorName: json['username'] ?? 'unknown',
+        authorName: json['User']['username'],
       );
 }
